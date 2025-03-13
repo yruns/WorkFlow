@@ -1,0 +1,4 @@
+/home/shyue/cmake-3.30.7-linux-x86_64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G "Unix Makefiles" -S /home/shyue/paper-code/cpp-projects/WorkFlow -B /home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug
+-- Configuring done (0.5s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug

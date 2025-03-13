@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="remote (8a6e2259-4ac6-4a6e-a3f8-89a490f84066)" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="remote (8a6e2259-4ac6-4a6e-a3f8-89a490f84066)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/shyue/paper-code/cpp-projects/WorkFlow" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/cmake-build-debug" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>
