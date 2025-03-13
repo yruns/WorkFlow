@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/g++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel -I/home/shyue/paper-code/cpp-projects/WorkFlow/src/workflow -isystem /home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/_deps/googletest-src/googletest/include -isystem /home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/_deps/googletest-src/googletest
+CXX_INCLUDES = -I/home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel -I/home/shyue/paper-code/cpp-projects/WorkFlow/src/time -I/home/shyue/paper-code/cpp-projects/WorkFlow/src/workflow
 
 CXX_FLAGS = -g -std=gnu++1z -fdiagnostics-color=always
 

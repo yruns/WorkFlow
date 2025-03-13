@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING "build type")
 set(CMAKE_SKIP_RPATH TRUE)
 
@@ -26,12 +26,24 @@ list(REMOVE_DUPLICATES ALL_INCLUDE_DIRS)
 # 添加这些目录到 include_directories
 include_directories(${ALL_INCLUDE_DIRS})
 
-add_executable(main src/main.cpp
-        src/workflow/poller.h
-        src/kernel/poller.cpp
-        src/kernel/poller.h
-        src/kernel/list.h
+file(
+        GLOB_RECURSE SOURCES
+        "src/*.cpp"
+        "src/*.c"
+        "src/*.h"
+)
+
+add_executable(main ${SOURCES}  src/main.cpp
         src/kernel/RBTree.cpp
-        src/kernel/RBTree.h)
+        src/kernel/RBTree.h
+        src/time/Timer.cpp
+        src/time/Timer.h
+        src/time/TimerId.h
+        src/time/TimerQueue.cpp
+        src/time/TimerQueue.h
+        src/time/Timestamp.cpp
+        src/time/Timestamp.h
+        src/kernel/Callbacks.h
+        src/kernel/Poller.h)
 
 add_subdirectory(tests)

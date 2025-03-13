@@ -1,4 +1,53 @@
 /home/shyue/cmake-3.30.7-linux-x86_64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G "Unix Makefiles" -S /home/shyue/paper-code/cpp-projects/WorkFlow -B /home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug
--- Configuring done (0.5s)
--- Generating done (0.0s)
--- Build files have been written to: /home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug
+-- The C compiler identification is GNU 8.4.0
+-- The CXX compiler identification is GNU 7.5.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+[ 11%] Creating directories for 'googletest-populate'
+[ 22%] Performing download step (git clone) for 'googletest-populate'
+正克隆到 'googletest-src'...
+error: RPC failed; curl 18 transfer closed with outstanding read data remaining
+fatal: The remote end hung up unexpectedly
+fatal: 过早的文件结束符（EOF）
+fatal: index-pack 失败
+正克隆到 'googletest-src'...
+error: RPC failed; curl 18 transfer closed with outstanding read data remaining
+fatal: The remote end hung up unexpectedly
+fatal: 过早的文件结束符（EOF）
+fatal: index-pack 失败
+正克隆到 'googletest-src'...
+error: RPC failed; curl 56 GnuTLS recv error (-9): A TLS packet with unexpected length was received.
+fatal: The remote end hung up unexpectedly
+fatal: 过早的文件结束符（EOF）
+fatal: index-pack 失败
+Had to git clone more than once: 3 times.
+CMake Error at googletest-subbuild/googletest-populate-prefix/tmp/googletest-populate-gitclone.cmake:50 (message):
+  Failed to clone repository: 'https://github.com/google/googletest.git'
+
+
+CMakeFiles/googletest-populate.dir/build.make:101: recipe for target 'googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-download' failed
+make[2]: *** [googletest-populate-prefix/src/googletest-populate-stamp/googletest-populate-download] Error 1
+CMakeFiles/Makefile2:82: recipe for target 'CMakeFiles/googletest-populate.dir/all' failed
+make[1]: *** [CMakeFiles/googletest-populate.dir/all] Error 2
+Makefile:90: recipe for target 'all' failed
+make: *** [all] Error 2
+
+CMake Error at /home/shyue/cmake-3.30.7-linux-x86_64/share/cmake-3.30/Modules/FetchContent.cmake:1918 (message):
+  Build step for googletest failed: 2
+Call Stack (most recent call first):
+  /home/shyue/cmake-3.30.7-linux-x86_64/share/cmake-3.30/Modules/FetchContent.cmake:1609 (__FetchContent_populateSubbuild)
+  /home/shyue/cmake-3.30.7-linux-x86_64/share/cmake-3.30/Modules/FetchContent.cmake:2145:EVAL:2 (__FetchContent_doPopulation)
+  /home/shyue/cmake-3.30.7-linux-x86_64/share/cmake-3.30/Modules/FetchContent.cmake:2145 (cmake_language)
+  /home/shyue/cmake-3.30.7-linux-x86_64/share/cmake-3.30/Modules/FetchContent.cmake:2384 (__FetchContent_Populate)
+  tests/CMakeLists.txt:13 (FetchContent_MakeAvailable)
+
+
+-- Configuring incomplete, errors occurred!

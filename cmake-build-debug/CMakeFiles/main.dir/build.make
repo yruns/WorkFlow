@@ -83,52 +83,81 @@ CMakeFiles/main.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/main.cpp.s"
 	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shyue/paper-code/cpp-projects/WorkFlow/src/main.cpp -o CMakeFiles/main.dir/src/main.cpp.s
 
-CMakeFiles/main.dir/src/kernel/poller.cpp.o: CMakeFiles/main.dir/flags.make
-CMakeFiles/main.dir/src/kernel/poller.cpp.o: /home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel/poller.cpp
-CMakeFiles/main.dir/src/kernel/poller.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/kernel/poller.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/kernel/poller.cpp.o -MF CMakeFiles/main.dir/src/kernel/poller.cpp.o.d -o CMakeFiles/main.dir/src/kernel/poller.cpp.o -c /home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel/poller.cpp
+CMakeFiles/main.dir/src/kernel/RBTree.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/kernel/RBTree.cpp.o: /home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel/RBTree.cpp
+CMakeFiles/main.dir/src/kernel/RBTree.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/main.dir/src/kernel/RBTree.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/kernel/RBTree.cpp.o -MF CMakeFiles/main.dir/src/kernel/RBTree.cpp.o.d -o CMakeFiles/main.dir/src/kernel/RBTree.cpp.o -c /home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel/RBTree.cpp
 
-CMakeFiles/main.dir/src/kernel/poller.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/kernel/poller.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel/poller.cpp > CMakeFiles/main.dir/src/kernel/poller.cpp.i
+CMakeFiles/main.dir/src/kernel/RBTree.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/kernel/RBTree.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel/RBTree.cpp > CMakeFiles/main.dir/src/kernel/RBTree.cpp.i
 
-CMakeFiles/main.dir/src/kernel/poller.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/kernel/poller.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel/poller.cpp -o CMakeFiles/main.dir/src/kernel/poller.cpp.s
+CMakeFiles/main.dir/src/kernel/RBTree.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/kernel/RBTree.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shyue/paper-code/cpp-projects/WorkFlow/src/kernel/RBTree.cpp -o CMakeFiles/main.dir/src/kernel/RBTree.cpp.s
 
-CMakeFiles/main.dir/tests/test_list.cpp.o: CMakeFiles/main.dir/flags.make
-CMakeFiles/main.dir/tests/test_list.cpp.o: /home/shyue/paper-code/cpp-projects/WorkFlow/tests/test_list.cpp
-CMakeFiles/main.dir/tests/test_list.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/tests/test_list.cpp.o"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/tests/test_list.cpp.o -MF CMakeFiles/main.dir/tests/test_list.cpp.o.d -o CMakeFiles/main.dir/tests/test_list.cpp.o -c /home/shyue/paper-code/cpp-projects/WorkFlow/tests/test_list.cpp
+CMakeFiles/main.dir/src/time/Timer.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/time/Timer.cpp.o: /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/Timer.cpp
+CMakeFiles/main.dir/src/time/Timer.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/main.dir/src/time/Timer.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/time/Timer.cpp.o -MF CMakeFiles/main.dir/src/time/Timer.cpp.o.d -o CMakeFiles/main.dir/src/time/Timer.cpp.o -c /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/Timer.cpp
 
-CMakeFiles/main.dir/tests/test_list.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/tests/test_list.cpp.i"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shyue/paper-code/cpp-projects/WorkFlow/tests/test_list.cpp > CMakeFiles/main.dir/tests/test_list.cpp.i
+CMakeFiles/main.dir/src/time/Timer.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/time/Timer.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/Timer.cpp > CMakeFiles/main.dir/src/time/Timer.cpp.i
 
-CMakeFiles/main.dir/tests/test_list.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/tests/test_list.cpp.s"
-	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shyue/paper-code/cpp-projects/WorkFlow/tests/test_list.cpp -o CMakeFiles/main.dir/tests/test_list.cpp.s
+CMakeFiles/main.dir/src/time/Timer.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/time/Timer.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/Timer.cpp -o CMakeFiles/main.dir/src/time/Timer.cpp.s
+
+CMakeFiles/main.dir/src/time/TimerQueue.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/time/TimerQueue.cpp.o: /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/TimerQueue.cpp
+CMakeFiles/main.dir/src/time/TimerQueue.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/main.dir/src/time/TimerQueue.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/time/TimerQueue.cpp.o -MF CMakeFiles/main.dir/src/time/TimerQueue.cpp.o.d -o CMakeFiles/main.dir/src/time/TimerQueue.cpp.o -c /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/TimerQueue.cpp
+
+CMakeFiles/main.dir/src/time/TimerQueue.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/time/TimerQueue.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/TimerQueue.cpp > CMakeFiles/main.dir/src/time/TimerQueue.cpp.i
+
+CMakeFiles/main.dir/src/time/TimerQueue.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/time/TimerQueue.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/TimerQueue.cpp -o CMakeFiles/main.dir/src/time/TimerQueue.cpp.s
+
+CMakeFiles/main.dir/src/time/Timestamp.cpp.o: CMakeFiles/main.dir/flags.make
+CMakeFiles/main.dir/src/time/Timestamp.cpp.o: /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/Timestamp.cpp
+CMakeFiles/main.dir/src/time/Timestamp.cpp.o: CMakeFiles/main.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/main.dir/src/time/Timestamp.cpp.o"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/main.dir/src/time/Timestamp.cpp.o -MF CMakeFiles/main.dir/src/time/Timestamp.cpp.o.d -o CMakeFiles/main.dir/src/time/Timestamp.cpp.o -c /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/Timestamp.cpp
+
+CMakeFiles/main.dir/src/time/Timestamp.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/main.dir/src/time/Timestamp.cpp.i"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/Timestamp.cpp > CMakeFiles/main.dir/src/time/Timestamp.cpp.i
+
+CMakeFiles/main.dir/src/time/Timestamp.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/main.dir/src/time/Timestamp.cpp.s"
+	/usr/bin/g++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/shyue/paper-code/cpp-projects/WorkFlow/src/time/Timestamp.cpp -o CMakeFiles/main.dir/src/time/Timestamp.cpp.s
 
 # Object files for target main
 main_OBJECTS = \
 "CMakeFiles/main.dir/src/main.cpp.o" \
-"CMakeFiles/main.dir/src/kernel/poller.cpp.o" \
-"CMakeFiles/main.dir/tests/test_list.cpp.o"
+"CMakeFiles/main.dir/src/kernel/RBTree.cpp.o" \
+"CMakeFiles/main.dir/src/time/Timer.cpp.o" \
+"CMakeFiles/main.dir/src/time/TimerQueue.cpp.o" \
+"CMakeFiles/main.dir/src/time/Timestamp.cpp.o"
 
 # External object files for target main
 main_EXTERNAL_OBJECTS =
 
 main: CMakeFiles/main.dir/src/main.cpp.o
-main: CMakeFiles/main.dir/src/kernel/poller.cpp.o
-main: CMakeFiles/main.dir/tests/test_list.cpp.o
+main: CMakeFiles/main.dir/src/kernel/RBTree.cpp.o
+main: CMakeFiles/main.dir/src/time/Timer.cpp.o
+main: CMakeFiles/main.dir/src/time/TimerQueue.cpp.o
+main: CMakeFiles/main.dir/src/time/Timestamp.cpp.o
 main: CMakeFiles/main.dir/build.make
-main: lib/libgtest.a
-main: lib/libgtest_main.a
-main: lib/libgtest.a
 main: CMakeFiles/main.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/shyue/paper-code/cpp-projects/WorkFlow/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable main"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/main.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

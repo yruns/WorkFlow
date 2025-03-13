@@ -1,190 +1,331 @@
-//
-// Created by yruns on 2025/3/12.
-//
+#ifndef _LINUX_LIST_H
+#define _LINUX_LIST_H
 
-#ifndef LIST_H
-#define LIST_H
-
-#include <cstddef>
-
-/**
- * 双向链表节点结构体
+/*
+ * Circular doubly linked list implementation.
+ *
+ * Some of the internal functions ("__xxx") are useful when
+ * manipulating whole lists rather than single entries, as
+ * sometimes we already know the next/prev entries and we can
+ * generate better code by using them directly rather than
+ * using the generic single-entry routines.
  */
-struct BiListNode
-{
-    BiListNode* prev;  // 指向前一个节点
-    BiListNode* next;  // 指向下一个节点
+
+struct list_head {
+	struct list_head *next, *prev;
 };
 
+#define LIST_HEAD_INIT(name) { &(name), &(name) }
+
+#define LIST_HEAD(name) \
+	struct list_head name = LIST_HEAD_INIT(name)
+
 /**
- * 双向循环链表类
+ * INIT_LIST_HEAD - Initialize a list_head structure
+ * @list: list_head structure to be initialized.
+ *
+ * Initializes the list_head to point to itself.  If it is a list header,
+ * the result is an empty list.
  */
-class BiList
+static inline void INIT_LIST_HEAD(struct list_head *list)
 {
-public:
-    /**
-     * @brief 构造函数，初始化头节点
-     */
-    BiList() : head(new BiListNode), size_(0)
-    {
-        head->next = head;
-        head->prev = head;
-    }
+	list->next = list;
+	list->prev = list;
+}
 
-    /**
-     * @brief 析构函数，释放所有节点
-     */
-    ~BiList()
-    {
-        clear();
-        delete head;
-    }
+/*
+ * Insert a new entry between two known consecutive entries.
+ *
+ * This is only for internal list manipulation where we know
+ * the prev/next entries already!
+ */
+static inline void __list_add(struct list_head *entry,
+			      struct list_head *prev,
+			      struct list_head *next)
+{
+	next->prev = entry;
+	entry->next = next;
+	entry->prev = prev;
+	prev->next = entry;
+}
 
-    /**
-     * @brief 在指定位置插入节点
-     * @param entry 需要插入的节点
-     * @param prev 该节点的前驱节点
-     */
-    void __add(BiListNode *entry, BiListNode *prev)
-    {
-        BiListNode *next = prev->next;
-        prev->next = entry;
-        entry->prev = prev;
-        entry->next = next;
-        next->prev = entry;
-        size_ += 1;
-    }
+/**
+ * list_add - add a new entry
+ * @entry: new entry to be added
+ * @head: list head to add it after
+ *
+ * Insert a new entry after the specified head.
+ * This is good for implementing stacks.
+ */
+static inline void list_add(struct list_head *entry, struct list_head *head)
+{
+	__list_add(entry, head, head->next);
+}
 
-    /**
-     * @brief 在头部插入节点
-     * @param entry 需要插入的节点
-     */
-    void add(BiListNode *entry)
-    {
-        __add(entry, head);
-    }
+/**
+ * list_add_tail - add a new entry
+ * @entry: new entry to be added
+ * @head: list head to add it before
+ *
+ * Insert a new entry before the specified head.
+ * This is useful for implementing queues.
+ */
+static inline void list_add_tail(struct list_head *entry,
+				 struct list_head *head)
+{
+	__list_add(entry, head->prev, head);
+}
 
-    /**
-     * @brief 在尾部插入节点
-     * @param entry 需要插入的节点
-     */
-    void addToTail(BiListNode *entry)
-    {
-        __add(entry, head->prev);
-    }
+/*
+ * Delete a list entry by making the prev/next entries
+ * point to each other.
+ *
+ * This is only for internal list manipulation where we know
+ * the prev/next entries already!
+ */
+static inline void __list_del(struct list_head *prev, struct list_head *next)
+{
+	next->prev = prev;
+	prev->next = next;
+}
 
-    /**
-     * @brief 删除指定节点
-     * @param prev 该节点的前驱节点
-     * @param next 该节点的后继节点
-     */
-    void __del(BiListNode *prev, BiListNode* next)
-    {
-        prev->next = next;
-        next->prev = prev;
-        size_ -= 1;
-    }
+/**
+ * list_del - deletes entry from list.
+ * @entry: the element to delete from the list.
+ * Note: list_empty() on entry does not return true after this, the entry is
+ * in an undefined state.
+ */
+static inline void list_del(struct list_head *entry)
+{
+	__list_del(entry->prev, entry->next);
+}
 
-    /**
-     * @brief 删除链表中的某个节点
-     * @param entry 需要删除的节点
-     */
-    void del(const BiListNode *entry)
-    {
-        __del(entry->prev, entry->next);
-        delete entry;
-    }
+/**
+ * list_move - delete from one list and add as another's head
+ * @entry: the entry to move
+ * @head: the head that will precede our entry
+ */
+static inline void list_move(struct list_head *entry, struct list_head *head)
+{
+	__list_del(entry->prev, entry->next);
+	list_add(entry, head);
+}
 
-    /**
-     * @brief 移动节点到另一个链表
-     * @param entry 需要移动的节点
-     * @param biList 目标链表
-     */
-    void move(BiListNode* entry, BiList& biList)
-    {
-        __del(entry->prev, entry->next);
-        biList.add(entry);
-    }
+/**
+ * list_move_tail - delete from one list and add as another's tail
+ * @entry: the entry to move
+ * @head: the head that will follow our entry
+ */
+static inline void list_move_tail(struct list_head *entry,
+				  struct list_head *head)
+{
+	__list_del(entry->prev, entry->next);
+	list_add_tail(entry, head);
+}
 
-    /**
-     * @brief 移动节点到另一个链表的尾部
-     * @param entry 需要移动的节点
-     * @param biList 目标链表
-     */
-    void moveToTail(BiListNode* entry, BiList& biList)
-    {
-        __del(entry->prev, entry->next);
-        biList.addToTail(entry);
-    }
+/**
+ * list_empty - tests whether a list is empty
+ * @head: the list to test.
+ */
+static inline int list_empty(const struct list_head *head)
+{
+	return head->next == head;
+}
 
-    /**
-     * @brief 判断链表是否为空
-     * @return 若为空返回 true，否则返回 false
-     */
-    bool empty() const {
-        return size_ == 0;
-    }
+static inline void __list_splice(const struct list_head *list,
+				 struct list_head *prev,
+				 struct list_head *next)
+{
+	struct list_head *first = list->next;
+	struct list_head *last = list->prev;
 
-    /**
-     * @brief 清空链表，释放所有节点
-     */
-    void clear()
-    {
-        if (size_ > 0)
-        {
-            BiListNode *cur = head->next;
-            while (cur != head)
-            {
-                BiListNode *next = cur->next;
-                delete cur;
-                cur = next;
-            }
-            head->next = head;
-            head->prev = head;
-        }
-        size_ = 0;
-    }
+	first->prev = prev;
+	prev->next = first;
 
-    /**
-     * @brief 合并另一个链表到当前链表
-     * @param biList 需要合并的链表
-     * @param clear 是否清空被合并的链表
-     */
-    void merge(BiList& biList, const bool clear = false)
-    {
-        if (!biList.empty())
-        {
-            BiListNode* first = biList.head;
-            BiListNode* last = biList.head->prev;
+	last->next = next;
+	next->prev = last;
+}
 
-            BiListNode* next = head->next;
-            head->next = first;
-            first->prev = head;
-            last->next = next;
-            next->prev = last;
+/**
+ * list_splice - join two lists
+ * @list: the new list to add.
+ * @head: the place to add it in the first list.
+ */
+static inline void list_splice(const struct list_head *list,
+			       struct list_head *head)
+{
+	if (!list_empty(list))
+		__list_splice(list, head, head->next);
+}
 
-            size_ += biList.size_;
-            if (clear)
-            {
-                biList.head->next = biList.head;
-                biList.head->prev = biList.head;
-                biList.size_ = 0;
-            }
-        }
-    }
+/**
+ * list_splice_init - join two lists and reinitialise the emptied list.
+ * @list: the new list to add.
+ * @head: the place to add it in the first list.
+ *
+ * The list at @list is reinitialised
+ */
+static inline void list_splice_init(struct list_head *list,
+				    struct list_head *head)
+{
+	if (!list_empty(list)) {
+		__list_splice(list, head, head->next);
+		INIT_LIST_HEAD(list);
+	}
+}
 
-    /**
-     * @brief 获取链表的大小
-     * @return 链表中的节点数量
-     */
-    size_t size() const
-    {
-        return size_;
-    }
+/**
+ * list_entry - get the struct for this entry
+ * @ptr:	the &struct list_head pointer.
+ * @type:	the type of the struct this is embedded in.
+ * @member:	the name of the list_struct within the struct.
+ */
+#define list_entry(ptr, type, member) \
+	((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->member)))
 
-private:
-    BiListNode* head;  // 头节点
-    size_t size_;      // 链表节点数
+/**
+ * list_for_each - iterate over a list
+ * @pos:	the &struct list_head to use as a loop counter.
+ * @head:	the head for your list.
+ */
+#define list_for_each(pos, head) \
+	for (pos = (head)->next; pos != (head); pos = pos->next)
+
+/**
+ * list_for_each_prev - iterate over a list backwards
+ * @pos:	the &struct list_head to use as a loop counter.
+ * @head:	the head for your list.
+ */
+#define list_for_each_prev(pos, head) \
+	for (pos = (head)->prev; pos != (head); pos = pos->prev)
+
+/**
+ * list_for_each_safe - iterate over a list safe against removal of list entry
+ * @pos:	the &struct list_head to use as a loop counter.
+ * @n:		another &struct list_head to use as temporary storage
+ * @head:	the head for your list.
+ */
+#define list_for_each_safe(pos, n, head) \
+	for (pos = (head)->next, n = pos->next; pos != (head); \
+	     pos = n, n = pos->next)
+
+/**
+ * list_for_each_entry - iterate over list of given type
+ * @pos:	the type * to use as a loop counter.
+ * @head:	the head for your list.
+ * @member:	the name of the list_struct within the struct.
+ */
+#define list_for_each_entry(pos, head, member) \
+	for (pos = list_entry((head)->next, typeof (*pos), member); \
+	     &pos->member != (head); \
+	     pos = list_entry(pos->member.next, typeof (*pos), member))
+
+/*
+ * Singly linked list implementation.
+ */
+
+struct slist_node {
+	struct slist_node *next;
 };
 
-#endif // LIST_H
+struct slist_head {
+	struct slist_node first, *last;
+};
+
+#define SLIST_HEAD_INIT(name) { { (struct slist_node *)0 }, &(name).first }
+
+#define SLIST_HEAD(name) \
+	struct slist_head name = SLIST_HEAD_INIT(name)
+
+static inline void INIT_SLIST_HEAD(struct slist_head *list)
+{
+	list->first.next = (struct slist_node *)0;
+	list->last = &list->first;
+}
+
+static inline void slist_add_after(struct slist_node *entry,
+				   struct slist_node *prev,
+				   struct slist_head *list)
+{
+	entry->next = prev->next;
+	prev->next = entry;
+	if (!entry->next)
+		list->last = entry;
+}
+
+static inline void slist_add_head(struct slist_node *entry,
+				  struct slist_head *list)
+{
+	slist_add_after(entry, &list->first, list);
+}
+
+static inline void slist_add_tail(struct slist_node *entry,
+				  struct slist_head *list)
+{
+	entry->next = (struct slist_node *)0;
+	list->last->next = entry;
+	list->last = entry;
+}
+
+static inline void slist_del_after(struct slist_node *prev,
+				   struct slist_head *list)
+{
+	prev->next = prev->next->next;
+	if (!prev->next)
+		list->last = prev;
+}
+
+static inline void slist_del_head(struct slist_head *list)
+{
+	slist_del_after(&list->first, list);
+}
+
+static inline int slist_empty(const struct slist_head *list)
+{
+	return !list->first.next;
+}
+
+static inline void __slist_splice(const struct slist_head *list,
+				  struct slist_node *prev,
+				  struct slist_head *head)
+{
+	list->last->next = prev->next;
+	prev->next = list->first.next;
+	if (!list->last->next)
+		head->last = list->last;
+}
+
+static inline void slist_splice(const struct slist_head *list,
+				struct slist_node *prev,
+				struct slist_head *head)
+{
+	if (!slist_empty(list))
+		__slist_splice(list, prev, head);
+}
+
+static inline void slist_splice_init(struct slist_head *list,
+				     struct slist_node *prev,
+				     struct slist_head *head)
+{
+	if (!slist_empty(list)) {
+		__slist_splice(list, prev, head);
+		INIT_SLIST_HEAD(list);
+	}
+}
+
+#define slist_entry(ptr, type, member) \
+	((type *)((char *)(ptr)-(unsigned long)(&((type *)0)->member)))
+
+#define slist_for_each(pos, head) \
+	for (pos = (head)->first.next; pos; pos = pos->next)
+
+#define slist_for_each_safe(pos, prev, head) \
+	for (prev = &(head)->first, pos = prev->next; pos; \
+	     prev = prev->next == pos ? pos : prev, pos = prev->next)
+
+#define slist_for_each_entry(pos, head, member) \
+	for (pos = slist_entry((head)->first.next, typeof (*pos), member); \
+	     &pos->member != (struct slist_node *)0; \
+	     pos = slist_entry(pos->member.next, typeof (*pos), member))
+
+#endif

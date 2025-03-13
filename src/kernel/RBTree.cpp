@@ -1,358 +1,378 @@
-#include "RBTree.h"
-#include <iostream>
+/*
+  Red Black Trees
+  (C) 1999  Andrea Arcangeli <andrea@suse.de>
+  (C) 2002  David Woodhouse <dwmw2@infradead.org>
 
-void RBTree::rotateLeft(RBNode* x) {
-    if (!x || !x->right) return;
-    
-    RBNode* y = x->right;
-    x->right = y->left;
-    
-    if (y->left)
-        y->left->parent = x;
-    
-    y->parent = x->parent;
-    
-    if (!x->parent)
-        root = y;
-    else if (x == x->parent->left)
-        x->parent->left = y;
-    else
-        x->parent->right = y;
-    
-    y->left = x;
-    x->parent = y;
-}
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
 
-void RBTree::rotateRight(RBNode* x) {
-    if (!x || !x->left) return;
-    
-    RBNode* y = x->left;
-    x->left = y->right;
-    
-    if (y->right)
-        y->right->parent = x;
-    
-    y->parent = x->parent;
-    
-    if (!x->parent)
-        root = y;
-    else if (x == x->parent->left)
-        x->parent->left = y;
-    else
-        x->parent->right = y;
-    
-    y->right = x;
-    x->parent = y;
-}
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-void RBTree::insertFixUp(RBNode* z) {
-    while (z != root && z->parent && z->parent->color == Color::RED) {
-        if (z->parent == z->parent->parent->left) {
-            RBNode* y = z->parent->parent->right;
-            
-            if (y && y->color == Color::RED) {
-                // Case 1: Uncle is red
-                z->parent->color = Color::BLACK;
-                y->color = Color::BLACK;
-                z->parent->parent->color = Color::RED;
-                z = z->parent->parent;
-            } else {
-                if (z == z->parent->right) {
-                    // Case 2: Uncle is black and z is a right child
-                    z = z->parent;
-                    rotateLeft(z);
-                }
-                // Case 3: Uncle is black and z is a left child
-                z->parent->color = Color::BLACK;
-                z->parent->parent->color = Color::RED;
-                rotateRight(z->parent->parent);
-            }
-        } else {
-            RBNode* y = z->parent->parent->left;
-            
-            if (y && y->color == Color::RED) {
-                // Case 1: Uncle is red
-                z->parent->color = Color::BLACK;
-                y->color = Color::BLACK;
-                z->parent->parent->color = Color::RED;
-                z = z->parent->parent;
-            } else {
-                if (z == z->parent->left) {
-                    // Case 2: Uncle is black and z is a left child
-                    z = z->parent;
-                    rotateRight(z);
-                }
-                // Case 3: Uncle is black and z is a right child
-                z->parent->color = Color::BLACK;
-                z->parent->parent->color = Color::RED;
-                rotateLeft(z->parent->parent);
-            }
-        }
-    }
-    
-    root->color = Color::BLACK;
-}
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-void RBTree::insert(int key) {
-    RBNode* z = new RBNode(key);
-    RBNode* y = nullptr;
-    RBNode* x = root;
-    
-    // Find position to insert new node
-    while (x) {
-        y = x;
-        if (z->key < x->key)
-            x = x->left;
+  linux/lib/rbtree.c
+*/
+
+#include "rbtree.h"
+
+static void __rb_rotate_left(struct rb_node *node, struct rb_root *root)
+{
+    struct rb_node *right = node->rb_right;
+
+    if ((node->rb_right = right->rb_left))
+        right->rb_left->rb_parent = node;
+    right->rb_left = node;
+
+    if ((right->rb_parent = node->rb_parent))
+    {
+        if (node == node->rb_parent->rb_left)
+            node->rb_parent->rb_left = right;
         else
-            x = x->right;
-    }
-    
-    z->parent = y;
-    
-    if (!y)
-        root = z;
-    else if (z->key < y->key)
-        y->left = z;
-    else
-        y->right = z;
-    
-    // Fix Red-Black tree properties
-    insertFixUp(z);
+            node->rb_parent->rb_right = right;
+    } else
+        root->rb_node = right;
+    node->rb_parent = right;
 }
 
-void RBTree::transplant(RBNode* u, RBNode* v) {
-    if (!u->parent)
-        root = v;
-    else if (u == u->parent->left)
-        u->parent->left = v;
-    else
-        u->parent->right = v;
-    
-    if (v)
-        v->parent = u->parent;
-}
-
-void RBTree::eraseFixUp(RBNode* x, RBNode* parent) {
-    while (x != root && (!x || x->color == Color::BLACK)) {
-        if (!x || (!parent && !x->parent)) break;
-        
-        RBNode* p = x ? x->parent : parent;
-
-        if (x == p->left) {
-            RBNode* w = p->right;
-            
-            if (w && w->color == Color::RED) {
-                // Case 1: sibling is red
-                w->color = Color::BLACK;
-                p->color = Color::RED;
-                rotateLeft(p);
-                w = p->right;
-            }
-            
-            if (w && (!w->left || w->left->color == Color::BLACK) && 
-                (!w->right || w->right->color == Color::BLACK)) {
-                // Case 2: sibling is black and both its children are black
-                w->color = Color::RED;
-                x = p;
-            } else {
-                if (w && (!w->right || w->right->color == Color::BLACK)) {
-                    // Case 3: sibling is black, left child is red, right child is black
-                    if (w->left) w->left->color = Color::BLACK;
-                    w->color = Color::RED;
-                    rotateRight(w);
-                    w = p->right;
-                }
-                
-                // Case 4: sibling is black, right child is red
-                if (w) {
-                    w->color = p->color;
-                    if (w->right) w->right->color = Color::BLACK;
-                }
-                p->color = Color::BLACK;
-                rotateLeft(p);
-                x = root;
-            }
-        } else {
-            RBNode* w = p->left;
-            
-            if (w && w->color == Color::RED) {
-                // Case 1: sibling is red
-                w->color = Color::BLACK;
-                p->color = Color::RED;
-                rotateRight(p);
-                w = p->left;
-            }
-            
-            if (w && (!w->right || w->right->color == Color::BLACK) && 
-                (!w->left || w->left->color == Color::BLACK)) {
-                // Case 2: sibling is black and both its children are black
-                w->color = Color::RED;
-                x = p;
-            } else {
-                if (w && (!w->left || w->left->color == Color::BLACK)) {
-                    // Case 3: sibling is black, right child is red, left child is black
-                    if (w->right) w->right->color = Color::BLACK;
-                    w->color = Color::RED;
-                    rotateLeft(w);
-                    w = p->left;
-                }
-                
-                // Case 4: sibling is black, left child is red
-                if (w) {
-                    w->color = p->color;
-                    if (w->left) w->left->color = Color::BLACK;
-                }
-                p->color = Color::BLACK;
-                rotateRight(p);
-                x = root;
-            }
-        }
-        
-        if (x == p) parent = p;
-    }
-    
-    if (x) x->color = Color::BLACK;
-}
-
-void RBTree::erase(int key) {
-    RBNode* z = search(key);
-    if (!z) return;
-    
-    RBNode* y = z;
-    RBNode* x;
-    RBNode* x_parent = nullptr;
-    Color original_color = y->color;
-    
-    if (!z->left) {
-        x = z->right;
-        transplant(z, z->right);
-        if (x) x_parent = x->parent;
-        else x_parent = z->parent;
-    } else if (!z->right) {
-        x = z->left;
-        transplant(z, z->left);
-        x_parent = x->parent;
-    } else {
-        y = z->right;
-        while (y->left) y = y->left;
-        
-        original_color = y->color;
-        x = y->right;
-        
-        if (y->parent == z)
-            x_parent = y;
-        else {
-            x_parent = y->parent;
-            transplant(y, y->right);
-            y->right = z->right;
-            y->right->parent = y;
-        }
-        
-        transplant(z, y);
-        y->left = z->left;
-        y->left->parent = y;
-        y->color = z->color;
-    }
-    
-    if (original_color == Color::BLACK)
-        eraseFixUp(x, x_parent);
-    
-    delete z;
-}
-
-RBNode* RBTree::search(int key) const
+static void __rb_rotate_right(struct rb_node *node, struct rb_root *root)
 {
-    RBNode* current = root;
-    
-    while (current) {
-        if (key == current->key)
-            return current;
-        else if (key < current->key)
-            current = current->left;
+    struct rb_node *left = node->rb_left;
+
+    if ((node->rb_left = left->rb_right))
+        left->rb_right->rb_parent = node;
+    left->rb_right = node;
+
+    if ((left->rb_parent = node->rb_parent))
+    {
+        if (node == node->rb_parent->rb_right)
+            node->rb_parent->rb_right = left;
         else
-            current = current->right;
-    }
-    
-    return nullptr;
+            node->rb_parent->rb_left = left;
+    } else
+        root->rb_node = left;
+    node->rb_parent = left;
 }
 
-RBNode* RBTree::getMin() const
+void rb_insert_color(struct rb_node *node, struct rb_root *root)
 {
-    if (!root) return nullptr;
-    
-    RBNode* current = root;
-    while (current->left)
-        current = current->left;
-    
-    return current;
+    struct rb_node *parent, *gparent;
+
+    while ((parent = node->rb_parent) && parent->rb_color == RB_RED)
+    {
+        gparent = parent->rb_parent;
+
+        if (parent == gparent->rb_left)
+        {
+            {
+                register struct rb_node *uncle = gparent->rb_right;
+                if (uncle && uncle->rb_color == RB_RED)
+                {
+                    uncle->rb_color   = RB_BLACK;
+                    parent->rb_color  = RB_BLACK;
+                    gparent->rb_color = RB_RED;
+                    node              = gparent;
+                    continue;
+                }
+            }
+
+            if (parent->rb_right == node)
+            {
+                register struct rb_node *tmp;
+                __rb_rotate_left(parent, root);
+                tmp    = parent;
+                parent = node;
+                node   = tmp;
+            }
+
+            parent->rb_color  = RB_BLACK;
+            gparent->rb_color = RB_RED;
+            __rb_rotate_right(gparent, root);
+        } else
+        {
+            {
+                register struct rb_node *uncle = gparent->rb_left;
+                if (uncle && uncle->rb_color == RB_RED)
+                {
+                    uncle->rb_color   = RB_BLACK;
+                    parent->rb_color  = RB_BLACK;
+                    gparent->rb_color = RB_RED;
+                    node              = gparent;
+                    continue;
+                }
+            }
+
+            if (parent->rb_left == node)
+            {
+                register struct rb_node *tmp;
+                __rb_rotate_right(parent, root);
+                tmp    = parent;
+                parent = node;
+                node   = tmp;
+            }
+
+            parent->rb_color  = RB_BLACK;
+            gparent->rb_color = RB_RED;
+            __rb_rotate_left(gparent, root);
+        }
+    }
+
+    root->rb_node->rb_color = RB_BLACK;
 }
 
-RBNode* RBTree::getMax() const
+static void __rb_erase_color(struct rb_node *node, struct rb_node *parent,
+                             struct rb_root *root)
 {
-    if (!root) return nullptr;
-    
-    RBNode* current = root;
-    while (current->right)
-        current = current->right;
-    
-    return current;
-}
+    struct rb_node *other;
 
-RBNode* RBTree::successor(RBNode* node) {
-    if (!node) return nullptr;
-    
-    if (node->right) {
-        RBNode* current = node->right;
-        while (current->left)
-            current = current->left;
-        return current;
+    while ((!node || node->rb_color == RB_BLACK) && node != root->rb_node)
+    {
+        if (parent->rb_left == node)
+        {
+            other = parent->rb_right;
+            if (other->rb_color == RB_RED)
+            {
+                other->rb_color  = RB_BLACK;
+                parent->rb_color = RB_RED;
+                __rb_rotate_left(parent, root);
+                other = parent->rb_right;
+            }
+            if ((!other->rb_left || other->rb_left->rb_color == RB_BLACK) &&
+                (!other->rb_right || other->rb_right->rb_color == RB_BLACK))
+            {
+                other->rb_color = RB_RED;
+                node            = parent;
+                parent          = node->rb_parent;
+            } else
+            {
+                if (!other->rb_right || other->rb_right->rb_color == RB_BLACK)
+                {
+                    register struct rb_node *o_left;
+                    if ((o_left = other->rb_left))
+                        o_left->rb_color = RB_BLACK;
+                    other->rb_color = RB_RED;
+                    __rb_rotate_right(other, root);
+                    other = parent->rb_right;
+                }
+                other->rb_color  = parent->rb_color;
+                parent->rb_color = RB_BLACK;
+                if (other->rb_right)
+                    other->rb_right->rb_color = RB_BLACK;
+                __rb_rotate_left(parent, root);
+                node = root->rb_node;
+                break;
+            }
+        } else
+        {
+            other = parent->rb_left;
+            if (other->rb_color == RB_RED)
+            {
+                other->rb_color  = RB_BLACK;
+                parent->rb_color = RB_RED;
+                __rb_rotate_right(parent, root);
+                other = parent->rb_left;
+            }
+            if ((!other->rb_left || other->rb_left->rb_color == RB_BLACK) &&
+                (!other->rb_right || other->rb_right->rb_color == RB_BLACK))
+            {
+                other->rb_color = RB_RED;
+                node            = parent;
+                parent          = node->rb_parent;
+            } else
+            {
+                if (!other->rb_left || other->rb_left->rb_color == RB_BLACK)
+                {
+                    register struct rb_node *o_right;
+                    if ((o_right = other->rb_right))
+                        o_right->rb_color = RB_BLACK;
+                    other->rb_color = RB_RED;
+                    __rb_rotate_left(other, root);
+                    other = parent->rb_left;
+                }
+                other->rb_color  = parent->rb_color;
+                parent->rb_color = RB_BLACK;
+                if (other->rb_left)
+                    other->rb_left->rb_color = RB_BLACK;
+                __rb_rotate_right(parent, root);
+                node = root->rb_node;
+                break;
+            }
+        }
     }
-    
-    RBNode* parent = node->parent;
-    while (parent && node == parent->right) {
-        node = parent;
-        parent = parent->parent;
+    if (node)
+        node->rb_color = RB_BLACK;
+}
+
+void rb_erase(struct rb_node *node, struct rb_root *root)
+{
+    struct rb_node *child, *parent;
+    int             color;
+
+    if (!node->rb_left)
+        child = node->rb_right;
+    else if (!node->rb_right)
+        child = node->rb_left;
+    else
+    {
+        struct rb_node *old = node, *left;
+
+        node = node->rb_right;
+        while ((left = node->rb_left))
+            node = left;
+        child  = node->rb_right;
+        parent = node->rb_parent;
+        color  = node->rb_color;
+
+        if (child)
+            child->rb_parent = parent;
+        if (parent)
+        {
+            if (parent->rb_left == node)
+                parent->rb_left = child;
+            else
+                parent->rb_right = child;
+        } else
+            root->rb_node = child;
+
+        if (node->rb_parent == old)
+            parent = node;
+        node->rb_parent = old->rb_parent;
+        node->rb_color  = old->rb_color;
+        node->rb_right  = old->rb_right;
+        node->rb_left   = old->rb_left;
+
+        if (old->rb_parent)
+        {
+            if (old->rb_parent->rb_left == old)
+                old->rb_parent->rb_left = node;
+            else
+                old->rb_parent->rb_right = node;
+        } else
+            root->rb_node = node;
+
+        old->rb_left->rb_parent = node;
+        if (old->rb_right)
+            old->rb_right->rb_parent = node;
+        goto color;
     }
-    
-    return parent;
+
+    parent = node->rb_parent;
+    color  = node->rb_color;
+
+    if (child)
+        child->rb_parent = parent;
+    if (parent)
+    {
+        if (parent->rb_left == node)
+            parent->rb_left = child;
+        else
+            parent->rb_right = child;
+    } else
+        root->rb_node = child;
+
+color:
+    if (color == RB_BLACK)
+        __rb_erase_color(child, parent, root);
 }
 
-RBNode* RBTree::predecessor(RBNode* node) {
-    if (!node) return nullptr;
-    
-    if (node->left) {
-        RBNode* current = node->left;
-        while (current->right)
-            current = current->right;
-        return current;
+/*
+ * This function returns the first node (in sort order) of the tree.
+ */
+struct rb_node *rb_first(struct rb_root *root)
+{
+    struct rb_node *n;
+
+    n = root->rb_node;
+    if (!n)
+        return (struct rb_node *) 0;
+    while (n->rb_left)
+        n = n->rb_left;
+    return n;
+}
+
+struct rb_node *rb_last(struct rb_root *root)
+{
+    struct rb_node *n;
+
+    n = root->rb_node;
+    if (!n)
+        return (struct rb_node *) 0;
+    while (n->rb_right)
+        n = n->rb_right;
+    return n;
+}
+
+struct rb_node *rb_next(struct rb_node *node)
+{
+    /* If we have a right-hand child, go down and then left as far
+       as we can. */
+    if (node->rb_right)
+    {
+        node = node->rb_right;
+        while (node->rb_left)
+            node = node->rb_left;
+        return node;
     }
-    
-    RBNode* parent = node->parent;
-    while (parent && node == parent->left) {
-        node = parent;
-        parent = parent->parent;
+
+    /* No right-hand children.  Everything down and left is
+       smaller than us, so any 'next' node must be in the general
+       direction of our parent. Go up the tree; any time the
+       ancestor is a right-hand child of its parent, keep going
+       up. First time it's a left-hand child of its parent, said
+       parent is our 'next' node. */
+    while (node->rb_parent && node == node->rb_parent->rb_right)
+        node = node->rb_parent;
+
+    return node->rb_parent;
+}
+
+struct rb_node *rb_prev(struct rb_node *node)
+{
+    /* If we have a left-hand child, go down and then right as far
+       as we can. */
+    if (node->rb_left)
+    {
+        node = node->rb_left;
+        while (node->rb_right)
+            node = node->rb_right;
+        return node;
     }
-    
-    return parent;
+
+    /* No left-hand children. Go up till we find an ancestor which
+       is a right-hand child of its parent */
+    while (node->rb_parent && node == node->rb_parent->rb_left)
+        node = node->rb_parent;
+
+    return node->rb_parent;
 }
 
-void RBTree::clear(RBNode* node) {
-    if (!node) return;
-    
-    clear(node->left);
-    clear(node->right);
-    delete node;
-}
+void rb_replace_node(struct rb_node *victim, struct rb_node *newnode,
+                     struct rb_root *root)
+{
+    struct rb_node *parent = victim->rb_parent;
 
-void RBTree::inOrderPrint(RBNode* node) {
-    if (!node) return;
-    
-    inOrderPrint(node->left);
-    std::cout << node->key << "(" << (node->color == Color::RED ? "R" : "B") << ") ";
-    inOrderPrint(node->right);
-}
+    /* Set the surrounding nodes to point to the replacement */
+    if (parent)
+    {
+        if (victim == parent->rb_left)
+            parent->rb_left = newnode;
+        else
+            parent->rb_right = newnode;
+    } else
+    {
+        root->rb_node = newnode;
+    }
+    if (victim->rb_left)
+        victim->rb_left->rb_parent = newnode;
+    if (victim->rb_right)
+        victim->rb_right->rb_parent = newnode;
 
-void RBTree::print() {
-    inOrderPrint(root);
-    std::cout << std::endl;
+    /* Copy the pointers/colour from the victim to the replacement */
+    *newnode = *victim;
 }
